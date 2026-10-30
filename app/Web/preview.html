@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="vendor/fonts/fonts.css" onerror="this.remove()" />
+<style>
+  html, body { margin: 0; overflow: hidden; }
+  body { font-family: 'JetBrains Mono', 'Cascadia Mono', Consolas, monospace; font-size: 13px; }
+  #box { padding: 2px 4px 2px 4px; }
+  .l { white-space: pre; font-feature-settings: "liga" 0, "calt" 0; }
+  body.lig .l { font-feature-settings: "liga" 1, "calt" 1; }
+  body.thick .l { -webkit-text-stroke: 0.4px; }
+  b { font-weight: var(--bold, 700); }
+  svg { width: 1em; height: 1em; vertical-align: -0.12em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  #chips { display: flex; gap: 6px; margin-top: 12px; }
+  .chip { width: 16px; height: 9px; border-radius: 5px; }
+</style>
+</head>
+<body>
+<div id="box">
+  <div class="l" id="l1"></div>
+  <div class="l" id="l2"></div>
+  <div class="l" id="l3"></div>
+  <div id="chips"></div>
+</div>
+<script>
+const post = (m) => window.chrome.webview.postMessage(m);
+const FOLDER = '<svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" style="fill: currentColor"/></svg>';
+const BRANCH = '<svg viewBox="0 0 24 24"><path d="M6 3v12M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 9a9 9 0 0 1-9 9"/></svg>';
+let last = null;
+
+function c(color, html) { return '<span style="color:' + color + '">' + html + '</span>'; }
+
+function render(m) {
+  last = m;
+  const a = m.ansi;
+  const b = document.body.style;
+  b.background = m.bg; b.color = m.fg; b.fontFamily = m.fontFamily; b.fontSize = m.size + 'px'; b.fontWeight = m.weight;
+  b.setProperty('--bold', m.bold);
+  document.body.classList.toggle('lig', !!m.ligatures);
+  document.body.classList.toggle('thick', !!m.thicken);
+  document.getElementById('box').style.lineHeight = m.lineHeight;
+  document.getElementById('l1').innerHTML =
+    c(a[12], FOLDER + ' <b>~/projects/my-app</b>') + '  ' + c(a[5], BRANCH + ' <b>main</b>') + ' ' + c(a[2], '<b>❯</b>') + ' <b>git status</b>';
+  document.getElementById('l2').innerHTML = '<b>modified:</b>   ' + c(a[1], '<b>src/app.js</b>');
+  document.getElementById('l3').innerHTML =
+    c(a[5], 'func') + ' ' + c(a[4], 'main') + '() { x := a != b &amp;&amp; c &gt;= d =&gt; ok }';
+  const chips = document.getElementById('chips');
+  if (!chips.children.length) for (let i = 0; i < 16; i++) { const d = document.createElement('div'); d.className = 'chip'; chips.appendChild(d); }
+  for (let i = 0; i < 16; i++) chips.children[i].style.background = a[i];
+  report();
+}
+
+function report() {
+  requestAnimationFrame(() => post({ t: 'h', h: document.getElementById('box').getBoundingClientRect().height }));
+}
+
+// Draw only after the chosen font is ready (at most 1.5 s), so there is never a flash of another font.
+let seq = 0;
+window.chrome.webview.addEventListener('message', (e) => {
+  const m = e.data;
+  if (m.t !== 'pv') return;
+  const mine = ++seq;
+  const draw = () => { if (mine === seq) render(m); };
+  if (m.fontName && document.fonts && document.fonts.load) {
+    const loads = Promise.all([document.fonts.load(m.weight + " 13px '" + m.fontName + "'"), document.fonts.load(m.bold + " 13px '" + m.fontName + "'")]);
+    Promise.race([loads, new Promise((r) => setTimeout(r, 1500))]).then(draw, draw);
+  } else draw();
+});
+post({ t: 'ready' });
+</script>
+</body>
+</html>

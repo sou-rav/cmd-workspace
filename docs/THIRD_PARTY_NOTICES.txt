@@ -1,0 +1,23 @@
+CMD Workspace: third-party notices
+===================================
+CMD Workspace includes or uses the components below. Each belongs to its authors and is used under its own licence.
+Licence texts that could be read from the packages are in the "licenses" folder next to this file. The file
+licenses\licenses-summary.txt lists, for each package, the licence name the package itself declares.
+
+Terminal screen (in the Web\vendor folder)
+  xterm.js, xterm addon-fit, xterm addon-web-links ("@xterm/..." npm packages)   https://github.com/xtermjs/xterm.js
+  Licence: MIT (see licenses\ and licenses-summary.txt).
+
+Terminal fonts (in the Web\vendor\fonts folder, from the "@fontsource/..." npm packages, https://fontsource.org)
+  JetBrains Mono, Fira Code, Cascadia Code, Cascadia Mono, Iosevka, Geist Mono, IBM Plex Mono, Source Code Pro, Maple Mono, Ubuntu Mono.
+  Each font has its own licence (most use the SIL Open Font Licence 1.1; Ubuntu Mono uses the Ubuntu Font Licence).
+  The licence name of each package is in licenses\licenses-summary.txt, the text in licenses\.
+  Fonts that need installing on the PC (for example Menlo or Berkeley Mono) are NOT included.
+
+Program parts
+  .NET runtime and libraries (Microsoft)                  https://github.com/dotnet/runtime        MIT licence
+  Windows App SDK and WinUI 3 (Microsoft)                  https://github.com/microsoft/WindowsAppSDK   MIT licence (see the NuGet package for the exact text)
+  Microsoft Edge WebView2 (runtime from Windows, SDK from NuGet)   https://developer.microsoft.com/microsoft-edge/webview2   Microsoft licence terms
+
+Status of this list: written by the assistant on 2026-10-28 from the sources named above. The licence names in the program-parts block were NOT
+checked against the installed files (no Windows in the assistant's sandbox). Check them before you share the installer with other people.

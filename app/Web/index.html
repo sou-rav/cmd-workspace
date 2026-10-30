@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="vendor/xterm.css" />
+<link rel="stylesheet" href="vendor/fonts/fonts.css" onerror="this.remove()" />
+<style>
+  :root { --bg: #ffffff; --pop: #ffffff; --popEdge: rgba(0,0,0,.07); --hover: rgba(60,40,100,.07); --fg: #1d1d21; --sb: rgba(0,0,0,.30); }
+  html, body { margin: 0; height: 100%; background: var(--bg); overflow: hidden; }
+  /* The terminal text starts 10 px in from the left. The card around the page adds 6 DIPs, so text sits 16 DIPs (20 mockup px) from the card edge. */
+  #host { position: absolute; inset: 6px 4px 2px 10px; }
+  .term { position: absolute; inset: 0; visibility: hidden; }
+  .term.active { visibility: visible; }
+  /* The Windows scroll bar is off. We draw our own floating bar (.sbar), see terminal.js. */
+  .xterm-viewport { background-color: transparent !important; overflow-y: auto !important; scrollbar-width: none !important; }
+  .xterm-viewport::-webkit-scrollbar { display: none; }
+  /* Kero style bar: thin, rounded, no track, a gap to the card edge, fades out when idle, wider under the pointer. */
+  .sbar { position: absolute; top: 8px; bottom: 10px; right: 0; width: 18px; display: none; z-index: 5; }
+  .sthumb { position: absolute; right: 3px; top: 0; width: 4px; min-height: 36px; border-radius: 5px; background: var(--sb); opacity: 0;
+            transition: opacity .25s ease, width .12s ease, right .12s ease; }
+  .sbar.on .sthumb { opacity: 1; transition: opacity .08s ease, width .12s ease, right .12s ease; }
+  .sbar:hover .sthumb { opacity: 1; width: 8px; right: 1px; }
+  /* Ligatures off by default; Settings > Terminal > Ligatures turns them on. Thicken text adds a thin outline to the letters. */
+  .xterm { font-feature-settings: "liga" 0, "calt" 0; }
+  :root.lig .xterm { font-feature-settings: "liga" 1, "calt" 1; }
+  :root.thick .xterm-rows { -webkit-text-stroke: 0.4px; }
+  :root { color-scheme: light; }
+  :root.dark { color-scheme: dark; }
+  .menu { position: absolute; display: none; z-index: 2147483647; padding: 5px 12px; border-radius: 8px; background: var(--pop); color: var(--fg);
+          font: 12px 'Segoe UI Variable Text', 'Segoe UI', sans-serif; border: 1px solid var(--popEdge); cursor: pointer; user-select: none;
+          box-shadow: 0 8px 24px rgba(40,30,70,.18); }
+  /* "Copied" note: not clickable, fades in and out. */
+  .tip { pointer-events: none; cursor: default; opacity: 0; transition: opacity .15s ease; }
+  .tip.on { opacity: 1; }
+  /* Hover tint is layered over the solid background, so terminal text never shows through the menu. */
+  .menu:hover { background-image: linear-gradient(var(--hover), var(--hover)); }
+</style>
+</head>
+<body>
+<div id="host"></div>
+<div id="copyMenu" class="menu">Copy</div>
+<div id="pasteMenu" class="menu">Paste</div>
+<div id="copiedTip" class="menu tip">Copied</div>
+<script src="vendor/xterm.js"></script>
+<script src="vendor/addon-fit.js"></script>
+<script src="vendor/addon-web-links.js"></script>
+<script src="terminal.js"></script>
+</body>
+</html>

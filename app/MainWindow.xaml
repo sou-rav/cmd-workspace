@@ -1,0 +1,8 @@
+<Window
+    x:Class="CmdWorkspace.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Everything inside is built in code (MainWindow.cs, MainWindow.Menus.cs) from the approved Kero mockup. -->
+    <Grid x:Name="Root" />
+</Window>
