@@ -1,0 +1,9 @@
+program/
+program-light/
+logs/
+logs-for-claude.zip
+installer/Output/
+app/bin/
+app/obj/
+app/Web/vendor/
+*.pdb
